@@ -37,22 +37,22 @@ type element struct {
 	isWord bool
 }
 
-type field struct {
+type Field struct {
 	width, height int
 	field [][]element
 	wordPositions []wordPosition
 }
 
 // newField returns a new field with the given height and width.
-func newField (width int, height int) field {
+func newField (width int, height int) Field {
 	intField := make([][]element, height)
 	for i := range intField {
 		intField[i] = make([]element, width)
 	}
-	return field{width, height, intField, nil}
+	return Field{width, height, intField, nil}
 }
 
-func (f field) printField() {
+func (f Field) PrintField() {
 	for _, row := range f.field {
 		for _, c := range row {
 			if c.c != 0 {
@@ -65,7 +65,7 @@ func (f field) printField() {
 	}
 }
 
-func (f field) solveField() {
+func (f Field) SolveField() {
 	for _, row := range f.field {
 		for _, elem := range row {
 			if elem.c != 0 {
@@ -83,7 +83,7 @@ func (f field) solveField() {
 }
 
 // fillWithGarbage fills a fields empty spaces with random lower case alphabetical characters.
-func (f field) fillWithGarbage() {
+func (f Field) fillWithGarbage() {
 	rand.Seed(time.Now().Unix())
 
 	for _, row := range f.field {
@@ -97,7 +97,7 @@ func (f field) fillWithGarbage() {
 
 // placeWord tries to place a single string word on a field with the given starting coordinates and orientation.
 // Returns true if successful and false if not.
-func (f field) placeWord(word string, x int, y int, orient orientation) bool {
+func (f Field) placeWord(word string, x int, y int, orient orientation) bool {
 	if orient == 0 {
 		if x + len(word) > f.width {
 			return false
@@ -132,7 +132,7 @@ func (f field) placeWord(word string, x int, y int, orient orientation) bool {
 // TryPositionWords takes a slice of words and tries to position them on a field f. Should it fail to place all the words
 // on the board it returns false, otherwise returns true. Words which are placed on the board are also stored in the
 // fields wordPosition with their value, starting coordinates and orientation.
-func (f field) tryPositionWords(words []string, maxTries int) bool {
+func (f Field) tryPositionWords(words []string, maxTries int) bool {
 	if len(words) == 0 {
 		return true
 	}
@@ -172,10 +172,10 @@ func (f field) tryPositionWords(words []string, maxTries int) bool {
 
 // fillField creates a new field with width and height and then tries to place the words onto it. Should it
 // succeed it returns it and true, in a failure case empty and false
-func fillField(words []string, width int, height int, TriesPerWord int) (field, bool) {
+func FillField(words []string, width int, height int, TriesPerWord int) (Field, bool) {
 	arr := newField(width, height)
 	if !arr.tryPositionWords(words, TriesPerWord) {
-		return field{}, false
+		return Field{}, false
 	}
 	arr.fillWithGarbage()
 

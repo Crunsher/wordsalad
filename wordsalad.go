@@ -2,7 +2,14 @@ package main
 
 import (
 	"flag"
-	"github.com/crunsher/wordsalad/canvas"
+	"os"
+	"text/scanner"
+	"bufio"
+	"strings"
+	"errors"
+	"fmt"
+	"strconv"
+	"github.com/Crunsher/wordsalad/canvas"
 )
 
 func readWordsFromFile(path string) ([]string, error) {
@@ -67,10 +74,10 @@ func main() {
 		return
 	}
 
-	finalField := field{}
+	finalField := canvas.Field{}
 	yay := false
 	for	i := 0 ; i < MaxTries; i++ {
-		f, success := canvas.fillField(words, fieldX, fieldY)
+		f, success := canvas.FillField(words, fieldX, fieldY, TriesPerWord)
 		if success {
 			finalField = f
 			yay = true
@@ -79,9 +86,9 @@ func main() {
 	}
 
 	if yay {
-		finalField.printField()
-		fmt.Printf("\n%s\n\n", strings.Repeat("-", finalField.width*2))
-		finalField.solveField()
+		finalField.PrintField()
+		fmt.Printf("\n%s\n\n", strings.Repeat("-", fieldX*2))
+		finalField.SolveField()
 	} else {
 		fmt.Printf("Gave up after %d tries with %d tries per word.\n", MaxTries, TriesPerWord)
 	}
