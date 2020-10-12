@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"image"
 	"os"
 	"text/scanner"
 	"bufio"
@@ -58,7 +59,7 @@ var TriesPerWord = 200
 func main() {
 	var fp string
 	var fs string
-	flag.StringVar(&fp, "words", "", "Path to csv with words")
+	flag.StringVar(&fp, "words", "words", "Path to csv with words")
 	flag.StringVar(&fs, "size", "30:30", "Size of field. Default \"30:30\"")
 	flag.Parse()
 	
@@ -92,4 +93,11 @@ func main() {
 	} else {
 		fmt.Printf("Gave up after %d tries with %d tries per word.\n", MaxTries, TriesPerWord)
 	}
+
+	var cv *image.RGBA
+	if cv, err = canvas.PaintImage(finalField); err != nil {
+		fmt.Printf(err.Error())
+	}
+
+	canvas.WriteToFile(cv, "out.png")
 }
