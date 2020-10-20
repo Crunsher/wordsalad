@@ -18,6 +18,7 @@ func readWordsFromFile(path string) ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer file.Close()
 	sc := scanner.Scanner{}
 	sc.Init(bufio.NewReader(file))
 
@@ -57,21 +58,28 @@ var MaxTries = 2000
 var TriesPerWord = 200
 
 func main() {
-	var fp string
-	var fs string
-	flag.StringVar(&fp, "words", "words", "Path to csv with words")
-	flag.StringVar(&fs, "size", "30:30", "Size of field. Default \"30:30\"")
+	var wordList string
+	var fieldSize string
+	var fontPath string
+	flag.StringVar(&wordList, "words", "words", "Path to csv word list. Default \"words\"")
+	flag.StringVar(&fieldSize, "size", "30:30", "Size of field. Default \"30:30\"")
+	flag.StringVar(&fontPath, "font", "RobotoMono-Medium.ttf", "Path to font file. Default \"RobotoMono-Medium.ttf\"")
 	flag.Parse()
 	
-	fieldX, fieldY, err := parseSize(fs)
+	fieldX, fieldY, err := parseSize(fieldSize)
 	if err != nil {
 		fmt.Printf(err.Error())
 		return
 	}
 
-	words, err := readWordsFromFile(fp)
+	words, err := readWordsFromFile(wordList)
 	if err != nil {
 		fmt.Printf("Failed to open file: %s\n", err.Error())
+		return
+	}
+
+	if _, err := os.Stat(fontPath); os.IsNotExist(err) {
+		fmt.Printf("Font file \"%s\" does not exist", fontPath)
 		return
 	}
 
@@ -82,7 +90,7 @@ func main() {
 		if success {
 			finalField = f
 			yay = true
-			break;
+			break
 		}
 	}
 
@@ -95,7 +103,7 @@ func main() {
 	}
 
 	var cv *image.RGBA
-	if cv, err = canvas.PaintImage(finalField); err != nil {
+	if cv, err = canvas.PaintImage(finalField, fontPath); err != nil {
 		fmt.Printf(err.Error())
 	}
 

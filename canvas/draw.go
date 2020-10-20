@@ -13,10 +13,9 @@ import (
 )
 
 var size = 12.0
-var font = "RobotoMono-Medium.ttf"
 
-func PaintImage(field Field) (*image.RGBA, error) {
-	fontBytes, err := ioutil.ReadFile(font)
+func PaintImage(field Field, fontPath string) (*image.RGBA, error) {
+	fontBytes, err := ioutil.ReadFile(fontPath)
 	if err != nil {
 		return nil, err
 	}
