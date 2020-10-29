@@ -107,7 +107,7 @@ func (f Field) PositionWords() error {
 				continue
 			}
 
-			fmt.Printf("Setting \"%s\" on X %d Y %d direction %d\n", word, posX, posY, orient)
+			fmt.Printf("%d:%d:%d %s (%d)\n", posX, posY, orient, word, tries)
 			f.positionWord(word, posX, posY, orient)
 			break
 		}
@@ -117,6 +117,7 @@ func (f Field) PositionWords() error {
 		}
 	}
 
+	fmt.Println()
 	return nil
 }
 

@@ -6,7 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/Crunsher/wordsalad/canvas"
-	field "github.com/Crunsher/wordsalad/field"
+	"github.com/Crunsher/wordsalad/field"
 	"os"
 	"strconv"
 	"strings"
@@ -54,9 +54,6 @@ func parseSize(fs string) (int, int, error) {
 	return x, y, nil
 }
 
-var MaxTries = 2000
-var TriesPerWord = 200
-
 func main() {
 	var wordList string
 	var fieldSize string
@@ -83,16 +80,16 @@ func main() {
 		return
 	}
 
-	field := field.NewField(fieldX, fieldY, words)
-	if err = field.PositionWords(); err != nil  {
+	newField := field.NewField(fieldX, fieldY, words)
+	if err = newField.PositionWords(); err != nil  {
 		fmt.Println(err.Error())
 		return
 	}
 
-	field.FillWithGarbage()
-	fmt.Println(field.AsciiField())
+	newField.FillWithGarbage()
+	fmt.Println(newField.AsciiField())
 
-	pfield, err := canvas.PaintImage(field. Bytes(), fontPath)
+	pfield, err := canvas.PaintImage(newField. Bytes(), fontPath)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
