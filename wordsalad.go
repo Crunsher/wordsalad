@@ -1,16 +1,16 @@
 package main
 
 import (
-	"flag"
-	"image"
-	"os"
-	"text/scanner"
 	"bufio"
-	"strings"
 	"errors"
+	"flag"
 	"fmt"
-	"strconv"
 	"github.com/Crunsher/wordsalad/canvas"
+	field "github.com/Crunsher/wordsalad/field"
+	"os"
+	"strconv"
+	"strings"
+	"text/scanner"
 )
 
 func readWordsFromFile(path string) ([]string, error) {
@@ -22,7 +22,7 @@ func readWordsFromFile(path string) ([]string, error) {
 	sc := scanner.Scanner{}
 	sc.Init(bufio.NewReader(file))
 
-	var words= []string{}
+	var words []string
 
 	for tok := sc.Scan(); tok != scanner.EOF; tok = sc.Scan() {
 		words = append(words, strings.ToLower(sc.TokenText()))
@@ -37,7 +37,7 @@ func parseSize(fs string) (int, int, error) {
 	if len(sizes) != 2 {
 		return 0, 0, errors.New(fmt.Sprintf("%s \"%v\" is not in the correct format.", errPrefix, fs))
 	}
-	x, err := strconv.Atoi((sizes[0]))
+	x, err := strconv.Atoi(sizes[0])
 	if err != nil {
 		return 0, 0, errors.New(fmt.Sprintf("%s %v", errPrefix, err))
 	}
@@ -83,29 +83,25 @@ func main() {
 		return
 	}
 
-	finalField := canvas.Field{}
-	yay := false
-	for	i := 0 ; i < MaxTries; i++ {
-		f, success := canvas.FillField(words, fieldX, fieldY, TriesPerWord)
-		if success {
-			finalField = f
-			yay = true
-			break
-		}
+	field := field.NewField(fieldX, fieldY, words)
+	if err = field.PositionWords(); err != nil  {
+		fmt.Println(err.Error())
+		return
 	}
 
-	if yay {
-		finalField.PrintField()
-		fmt.Printf("\n%s\n\n", strings.Repeat("-", fieldX*2))
-		finalField.SolveField()
-	} else {
-		fmt.Printf("Gave up after %d tries with %d tries per word.\n", MaxTries, TriesPerWord)
+	field.FillWithGarbage()
+	fmt.Println(field.AsciiField())
+
+	pfield, err := canvas.PaintImage(field. Bytes(), fontPath)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
 	}
 
-	var cv *image.RGBA
-	if cv, err = canvas.PaintImage(finalField, fontPath); err != nil {
-		fmt.Printf(err.Error())
+	if err := canvas.WriteToFile(pfield, "out.png"); err != nil {
+		fmt.Println(err.Error())
+		return
 	}
 
-	canvas.WriteToFile(cv, "out.png")
+	fmt.Println("YAY")
 }

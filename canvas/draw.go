@@ -14,7 +14,7 @@ import (
 
 var size = 12.0
 
-func PaintImage(field Field, fontPath string) (*image.RGBA, error) {
+func PaintImage(field [][]byte, fontPath string) (*image.RGBA, error) {
 	fontBytes, err := ioutil.ReadFile(fontPath)
 	if err != nil {
 		return nil, err
@@ -24,7 +24,7 @@ func PaintImage(field Field, fontPath string) (*image.RGBA, error) {
 		return nil, err
 	}
 
-	rgba := image.NewRGBA(image.Rect(0, 0, int(size)*field.width+40, int(size)*field.height+40))
+	rgba := image.NewRGBA(image.Rect(0, 0, int(size)*len(field)+40, int(size)*len(field[0])+40))
 	draw.Draw(rgba, rgba.Bounds(), image.White, image.ZP, draw.Src)
 	c := freetype.NewContext()
 	c.SetDPI(72)
@@ -34,10 +34,10 @@ func PaintImage(field Field, fontPath string) (*image.RGBA, error) {
 	c.SetDst(rgba)
 	c.SetSrc(image.Black)
 
-	for x, line := range field.field {
+	for x, line := range field {
 		for y, elem := range line {
 			pt := freetype.Pt(int(size) * y + 20, x * int(size) + 20)
-			_, err = c.DrawString(string(elem.c), pt)
+			_, err = c.DrawString(string(elem), pt)
 			if err != nil {
 				return nil, err
 			}
