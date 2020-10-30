@@ -58,9 +58,9 @@ func main() {
 	var wordList string
 	var fieldSize string
 	var fontPath string
-	flag.StringVar(&wordList, "words", "words", "Path to csv word list. Default \"words\"")
-	flag.StringVar(&fieldSize, "size", "30:30", "Size of field. Default \"30:30\"")
-	flag.StringVar(&fontPath, "font", "RobotoMono-Medium.ttf", "Path to font file. Default \"RobotoMono-Medium.ttf\"")
+	flag.StringVar(&wordList, "words", "words", "Path to csv word list.")
+	flag.StringVar(&fieldSize, "size", "30:30", "Size of field.")
+	flag.StringVar(&fontPath, "font", "RobotoMono-Medium.ttf", "Path to font file.")
 	flag.Parse()
 	
 	fieldX, fieldY, err := parseSize(fieldSize)
